@@ -20,10 +20,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     override func viewDidLoad() {
         super.viewDidLoad()
         locationManager.requestWhenInUseAuthorization()
-        mapView.showsUserLocation = true
+        mapView?.showsUserLocation = true
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
-        mapView.delegate = self
+        mapView?.delegate = self
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -31,7 +31,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let center = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude)
         let span = MKCoordinateSpan(latitudeDelta: 0.025, longitudeDelta: 0.025)
         region = MKCoordinateRegion(center: center, span: span)
-        mapView.setRegion(region, animated: true)
+        mapView?.setRegion(region, animated: true)
     }
     
     func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
@@ -45,28 +45,32 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                     print(mapItem.name!)
                 }
                 for mapItem in response.mapItems {
-                     let annotation = MKPointAnnotation()
-                     annotation.coordinate = mapItem.placemark.coordinate
-                     annotation.title = mapItem.name
-                     self.mapView.addAnnotation(annotation)
-                 }
+                    let annotation = MKPointAnnotation()
+                    annotation.coordinate = mapItem.placemark.coordinate
+                    annotation.title = mapItem.name
+                    self.mapView.addAnnotation(annotation)
+                }
             }
         }
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation is MKUserLocation {
-           return nil
+            return nil
         }
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: "pin")
         if pinView == nil {
-           pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pinView")
-           pinView?.canShowCallout = true
-           pinView?.rightCalloutAccessoryView = UIButton(type: .infoLight)
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pinView")
+            pinView?.canShowCallout = true
+            pinView?.rightCalloutAccessoryView = UIButton(type: .infoLight)
         } else {
-           pinView?.annotation = annotation
+            pinView?.annotation = annotation
         }
         return pinView
+    }
+    
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        performSegue(withIdentifier: "ShowLocationDetailsSegue", sender: nil)
     }
     
 }
