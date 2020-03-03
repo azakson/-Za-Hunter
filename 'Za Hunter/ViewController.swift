@@ -44,8 +44,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                 for mapItem in response.mapItems {
                     print(mapItem.name!)
                 }
+                for mapItem in response.mapItems {
+                     let annotation = MKPointAnnotation()
+                     annotation.coordinate = mapItem.placemark.coordinate
+                     annotation.title = mapItem.name
+                     self.mapView.addAnnotation(annotation)
+                 }
             }
         }
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation is MKUserLocation {
+           return nil
+        }
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: "pin")
+        if pinView == nil {
+           pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pinView")
+           pinView?.canShowCallout = true
+           pinView?.rightCalloutAccessoryView = UIButton(type: .infoLight)
+        } else {
+           pinView?.annotation = annotation
+        }
+        return pinView
     }
     
 }
