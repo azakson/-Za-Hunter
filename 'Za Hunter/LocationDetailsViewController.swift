@@ -7,11 +7,18 @@
 //
 
 import UIKit
+import MapKit
 
 class LocationDetailsViewController: ViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+                if let destination = segue.destination as? LocationDetailsViewController {
+                    destination.selectedMapItem = selectedMapItem
+                    print(selectedMapItem.name!)
+        }
     }
 }
